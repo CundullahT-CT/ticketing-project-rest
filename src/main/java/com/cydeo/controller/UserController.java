@@ -2,6 +2,7 @@ package com.cydeo.controller;
 
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.ResponseWrapper;
+import com.cydeo.service.KeycloakService;
 import com.cydeo.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,17 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final KeycloakService keycloakService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, KeycloakService keycloakService) {
         this.userService = userService;
+        this.keycloakService = keycloakService;
     }
 
     @PostMapping
     @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO user) {
+        keycloakService.userCreate(user);
         userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseWrapper("User is successfully created", HttpStatus.CREATED));
     }
