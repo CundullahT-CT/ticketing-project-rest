@@ -4,6 +4,8 @@ import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.ResponseWrapper;
 import com.cydeo.service.KeycloakService;
 import com.cydeo.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Controller
+@Tag(name = "User Controller",description = "User API")
 @RequestMapping("/api/v1/user")
 public class UserController {
 
@@ -25,6 +28,7 @@ public class UserController {
     }
 
     @PostMapping
+    @Operation(summary = "Create User")
     @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> createUser(@RequestBody UserDTO user) {
         keycloakService.userCreate(user);
@@ -33,6 +37,7 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Read All Users")
     @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> getUsers() {
         List<UserDTO> userDTOList = userService.listAllUsers();
@@ -40,6 +45,7 @@ public class UserController {
     }
 
     @GetMapping("/{userName}")
+    @Operation(summary = "Read by username")
     @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> getUserById(@PathVariable("userName") String userName) {
         UserDTO user = userService.findByUserName(userName);
@@ -47,6 +53,7 @@ public class UserController {
     }
 
     @PutMapping
+    @Operation(summary = "Update User")
     @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO user) {
         userService.update(user);
@@ -54,6 +61,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{username}")
+    @Operation(summary = "Delete User")
     @RolesAllowed("Admin")
     public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username) {
         userService.delete(username);
