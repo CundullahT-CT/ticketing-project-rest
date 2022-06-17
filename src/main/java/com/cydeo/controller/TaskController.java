@@ -1,5 +1,6 @@
 package com.cydeo.controller;
 
+import com.cydeo.annotation.DefaultExceptionMessage;
 import com.cydeo.dto.TaskDTO;
 import com.cydeo.entity.ResponseWrapper;
 import com.cydeo.enums.Status;
@@ -32,6 +33,7 @@ public class TaskController {
 
     @PostMapping
     @Operation(summary = "Create a new task")
+    @DefaultExceptionMessage(defaultMessage = "Failed to create task!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> createTask(@RequestBody TaskDTO task) {
         taskService.save(task);
@@ -40,6 +42,7 @@ public class TaskController {
 
     @GetMapping
     @Operation(summary = "Read all tasks")
+    @DefaultExceptionMessage(defaultMessage = "Failed to read all task!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> getTasks() {
         List<TaskDTO> taskDTOS = taskService.listAllTasks();
@@ -47,6 +50,7 @@ public class TaskController {
     }
     @GetMapping("/{taskId}")
     @Operation(summary = "Read task by id")
+    @DefaultExceptionMessage(defaultMessage = "Failed to read task by id!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> getTasksById(@PathVariable("taskId") Long taskId) {
         TaskDTO taskDTO = taskService.findById(taskId);
@@ -55,6 +59,7 @@ public class TaskController {
 
     @DeleteMapping("/{taskId}")
     @Operation(summary = "Delete a task")
+    @DefaultExceptionMessage(defaultMessage = "Failed to delete task!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> deleteTask(@PathVariable("taskId") Long taskId) {
         taskService.delete(taskId);
@@ -63,6 +68,7 @@ public class TaskController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update task")
+    @DefaultExceptionMessage(defaultMessage = "Failed to update task!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> updateTask(@RequestBody TaskDTO task) {
         taskService.update(task);
@@ -71,6 +77,7 @@ public class TaskController {
 
     @GetMapping("/employee/pending-tasks")
     @Operation(summary = "Read all non complete tasks")
+    @DefaultExceptionMessage(defaultMessage = "Failed to read Read all non complete tasks!")
     @RolesAllowed("Employee")
     public ResponseEntity<ResponseWrapper> employeePendingTasks() {
         List<TaskDTO> taskDTOList = taskService.listAllTasksByStatusIsNot(Status.COMPLETE);
@@ -79,6 +86,7 @@ public class TaskController {
 
     @PutMapping("/employee/update/{id}")
     @Operation(summary = "Update employee task")
+    @DefaultExceptionMessage(defaultMessage = "Failed to Update employee task")
     @RolesAllowed("Employee")
     public ResponseEntity<ResponseWrapper> employeeUpdateTask(@RequestBody TaskDTO task) {
         taskService.updateStatus(task);
@@ -87,6 +95,7 @@ public class TaskController {
 
     @GetMapping("/employee/archive")
     @Operation(summary = "Read completed employee task ")
+    @DefaultExceptionMessage(defaultMessage = "Failed to Read completed employee task")
     @RolesAllowed("Employee")
     public ResponseEntity<ResponseWrapper> employeeArchivedTasks() {
         List<TaskDTO> taskDTOS = taskService.listAllTasksByStatus(Status.COMPLETE);

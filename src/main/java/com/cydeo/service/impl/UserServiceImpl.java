@@ -6,6 +6,7 @@ import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Project;
 import com.cydeo.entity.Task;
 import com.cydeo.entity.User;
+import com.cydeo.exception.TicketingProjectException;
 import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.UserRepository;
 import com.cydeo.service.ProjectService;
@@ -43,8 +44,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findByUserName(String username) {
+    public UserDTO findByUserName(String username) throws TicketingProjectException {
         User user = userRepository.findByUserName(username);
+        if (user == null){
+            throw new TicketingProjectException("user coudn't find");
+        }
         return userMapper.convertToDTO(user);
     }
 
@@ -62,7 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO update(UserDTO dto) {
+    public UserDTO update(UserDTO dto) throws TicketingProjectException {
 
        //Find current user
         User user = userRepository.findByUserName(dto.getUserName());

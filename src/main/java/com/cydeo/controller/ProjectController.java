@@ -1,7 +1,9 @@
 package com.cydeo.controller;
 
+import com.cydeo.annotation.DefaultExceptionMessage;
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.entity.ResponseWrapper;
+import com.cydeo.exception.TicketingProjectException;
 import com.cydeo.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +28,7 @@ public class ProjectController {
 
     @PostMapping
     @Operation(summary = "Create project")
+    @DefaultExceptionMessage(defaultMessage = "Failed to cfreate project!")
     @RolesAllowed({"Manager","Admin"})
     public ResponseEntity<ResponseWrapper> insertProject(@RequestBody ProjectDTO project) {
         projectService.save(project);
@@ -35,14 +38,16 @@ public class ProjectController {
 
     @GetMapping
     @Operation(summary = "Read all projects")
+    @DefaultExceptionMessage(defaultMessage = "Failed to read all project!")
     @RolesAllowed("Manager")
-    public ResponseEntity<ResponseWrapper> getProjects() {
+    public ResponseEntity<ResponseWrapper> getProjects() throws TicketingProjectException {
         List<ProjectDTO> projectDTOS = projectService.listAllProjectDetails();
         return ResponseEntity.ok(new ResponseWrapper("Projects are successfully retrieved", projectDTOS, HttpStatus.OK));
     }
 
     @GetMapping("/{code}")
     @Operation(summary = "Read by project code")
+    @DefaultExceptionMessage(defaultMessage = "Failed to read project code!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> getProjectByCode(@PathVariable("code") String code) {
         ProjectDTO projectDTO = projectService.getByProjectCode(code);
@@ -51,6 +56,7 @@ public class ProjectController {
 
     @DeleteMapping("/{projectcode}")
     @Operation(summary = "Delete project")
+    @DefaultExceptionMessage(defaultMessage = "Failed to delete project!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> deleteProject(@PathVariable("projectcode") String projectcode) {
         projectService.delete(projectcode);
@@ -59,6 +65,7 @@ public class ProjectController {
 
     @PutMapping("/complete/{projectcode}")
     @Operation(summary = "Complete project")
+    @DefaultExceptionMessage(defaultMessage = "Failed to complete project!")
     @RolesAllowed("Manager")
     public ResponseEntity<ResponseWrapper> completeProject(@PathVariable("projectcode") String projectcode) {
         projectService.complete(projectcode);
@@ -78,7 +85,7 @@ public class ProjectController {
     @GetMapping("/manager/project-status")
     @Operation(summary = "Read all project details")
     @RolesAllowed("Manager")
-    public ResponseEntity<ResponseWrapper> getProjectByManager() {
+    public ResponseEntity<ResponseWrapper> getProjectByManager() throws TicketingProjectException {
         List<ProjectDTO> projects = projectService.listAllProjectDetails();
        return ResponseEntity.ok(new ResponseWrapper("Projects are successfully retrieved",projects,HttpStatus.OK));
     }
