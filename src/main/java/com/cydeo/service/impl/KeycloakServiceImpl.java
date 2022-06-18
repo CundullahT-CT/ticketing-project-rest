@@ -6,6 +6,7 @@ import com.cydeo.service.KeycloakService;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -34,37 +35,36 @@ public class KeycloakServiceImpl implements KeycloakService {
 
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setTemporary(false);
         credential.setValue(userDTO.getPassWord());
 
         UserRepresentation keycloakUser = new UserRepresentation();
+        keycloakUser.setId(String.valueOf(userDTO.getId()));
         keycloakUser.setUsername(userDTO.getUserName());
         keycloakUser.setFirstName(userDTO.getFirstName());
         keycloakUser.setLastName(userDTO.getLastName());
         keycloakUser.setEmail(userDTO.getUserName());
         keycloakUser.setCredentials(asList(credential));
+        keycloakUser.setEmailVerified(true);
         keycloakUser.setEnabled(true);
 
         // Get realm
         RealmResource realmResource = keycloak.realm(keycloakProperties.getRealm());
         UsersResource usersResource = realmResource.users();
         // Create Keycloak user
-        Response result = null;
-        try {
-            result = usersResource.create(keycloakUser);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
+        Response result = usersResource.create(keycloakUser);
+
         String userId = getCreatedId(result);
+        ClientRepresentation appClient = realmResource.clients()
+                .findByClientId(keycloakProperties.getClientId()).get(0);
 
-        RoleRepresentation savedRoleRepresentation =
-                realmResource.roles().get(userDTO.getRole().getDescription()).toRepresentation();
-        realmResource.users().get(userId).roles().realmLevel().add(List.of(savedRoleRepresentation));
+        RoleRepresentation userClientRole = realmResource.clients().get(appClient.getId()) //
+                .roles().get(userDTO.getRole().getDescription()).toRepresentation();
 
-        if (result==null || result.getStatus() != 201) {
-            System.err.println("Couldn't create Keycloak user.");
-        }else{
-            System.out.println("Keycloak user created.... verify in keycloak!");
-        }
+        realmResource.users().get(userId).roles().clientLevel(appClient.getId())
+                .add(List.of(userClientRole));
+
+
         keycloak.close();
         return result;
     }
