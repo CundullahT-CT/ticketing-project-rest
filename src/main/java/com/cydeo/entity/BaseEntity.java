@@ -1,5 +1,3 @@
-package com.cydeo.entity;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @MappedSuperclass
+@EntityListeners(BaseEntityListener.class)
 public class BaseEntity {
 
     @Id
@@ -20,26 +19,12 @@ public class BaseEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime insertDateTime;
     @Column(nullable = false, updatable = false)
-    private Long insertUserId;
+    private String insertUserId;
     @Column(nullable = false)
     private LocalDateTime lastUpdateDateTime;
     @Column(nullable = false)
-    private Long lastUpdateUserId;
+    private String lastUpdateUserId;
 
     private Boolean isDeleted = false;
-
-    @PrePersist
-    public void onPrePersist() {
-        this.insertDateTime = LocalDateTime.now();
-        this.lastUpdateDateTime = LocalDateTime.now();
-        this.insertUserId = 1L;
-        this.lastUpdateUserId = 1L;
-    }
-
-    @PreUpdate
-    public void onPreUpdate() {
-        this.lastUpdateDateTime = LocalDateTime.now();
-        this.lastUpdateUserId = 1L;
-    }
 
 }
