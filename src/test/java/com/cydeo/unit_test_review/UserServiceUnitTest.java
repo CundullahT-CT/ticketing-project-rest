@@ -2,6 +2,7 @@ package com.cydeo.unit_test_review;
 
 import com.cydeo.dto.ProjectDTO;
 import com.cydeo.dto.RoleDTO;
+import com.cydeo.dto.TaskDTO;
 import com.cydeo.dto.UserDTO;
 import com.cydeo.entity.Role;
 import com.cydeo.entity.User;
@@ -240,6 +241,24 @@ public class UserServiceUnitTest {
         when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(managerUser);
 
         when(projectService.listAllNonCompletedByAssignedManager(any())).thenReturn(List.of(new ProjectDTO(), new ProjectDTO()));
+
+        Throwable throwable = catchThrowable(() -> userService.delete(userDTO.getUserName()));
+
+        assertInstanceOf(TicketingProjectException.class, throwable);
+        assertEquals("User can not be deleted", throwable.getMessage());
+
+        verify(userMapper, atLeastOnce()).convertToDto(any());
+
+    }
+
+    @Test
+    void should_throw_exception_when_delete_employee() throws TicketingProjectException {
+
+        User employeeUser = getUser("Employee");
+
+        when(userRepository.findByUserNameAndIsDeleted(anyString(), anyBoolean())).thenReturn(employeeUser);
+
+        when(taskService.listAllNonCompletedByAssignedEmployee(any())).thenReturn(List.of(new TaskDTO(), new TaskDTO()));
 
         Throwable throwable = catchThrowable(() -> userService.delete(userDTO.getUserName()));
 
