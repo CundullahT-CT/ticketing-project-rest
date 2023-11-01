@@ -34,6 +34,7 @@ public class KeycloakServiceImpl implements KeycloakService {
         credentials.setTemporary(false);
         credentials.setType(CredentialRepresentation.PASSWORD);
         credentials.setValue(dto.getPassWord());
+
         UserRepresentation user = new UserRepresentation();
         user.setUsername(dto.getUserName());
         user.setFirstName(dto.getFirstName());
@@ -43,8 +44,8 @@ public class KeycloakServiceImpl implements KeycloakService {
         user.setEnabled(true);
         user.setRealmRoles(Collections.singletonList(dto.getRole().getDescription()));
 
-
-        var x = keycloak.realm("cydeo-dev").users().create(user);
+        // Save user to keycloak
+        keycloak.realm("cydeo-dev").users().create(user);
     }
 
     @Override
