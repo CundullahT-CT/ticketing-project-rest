@@ -12,13 +12,14 @@ import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.TaskRepository;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
-import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -122,8 +123,8 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDTO> listAllTasksByStatusIsNot(Status status) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
-        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
+        var details = authentication.getDetails();
+        String username = details.toString();
 
         UserDTO loggedInUser = userService.findByUserName(username);
 
@@ -136,8 +137,8 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDTO> listAllTasksByStatus(Status status) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
-        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
+        Map<String, Object> attributes = ((JwtAuthenticationToken) authentication).getTokenAttributes();
+        String username = (String) attributes.get("preferred_username");
 
         UserDTO loggedInUser = userService.findByUserName(username);
 
