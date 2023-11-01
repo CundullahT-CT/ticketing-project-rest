@@ -10,16 +10,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class KeycloakConfig {
 
+    private final KeycloakProperties keycloakProperties;
+
+    public KeycloakConfig(KeycloakProperties keycloakProperties) {
+        this.keycloakProperties = keycloakProperties;
+    }
+
     @Bean
     Keycloak keycloakadmin(){
 
         return KeycloakBuilder.builder()
-                .serverUrl("http://localhost:8080")
+                .serverUrl(keycloakProperties.getAuthServerUrl())
                 .grantType(OAuth2Constants.PASSWORD)
-                .realm("master")
-                .username("admin")
-                .password("admin")
-                .clientId("admin-cli")
+                .realm(keycloakProperties.getRealm())
+                .username(keycloakProperties.getMasterUser())
+                .password(keycloakProperties.getMasterUserPswd())
+                .clientId(keycloakProperties.getMasterClient())
                 .resteasyClient(new ResteasyClientBuilderImpl().connectionPoolSize(10).build())
                 .build();
     }

@@ -10,21 +10,28 @@ import org.springframework.stereotype.Component;
 @Setter
 public class KeycloakProperties {
 
-    @Value("${keycloak.realm}")
+    @Value("${master.realm}")
     private String realm;
+
+    @Value("${keycloak.realm}")
+    private String keycloakRealm;
+
     @Value("${keycloak.auth-server-url}")
     private String authServerUrl;
-    @Value("${keycloak.resource}")
-    private String clientId;
-    @Value("${keycloak.credentials.secret}")
-    private String clientSecret;
-    @Value("${master.user}")
-    private String masterUser;
-    @Value("${master.user.password}")
-    private String masterUserPswd;
-    @Value("${master.realm}")
-    private String masterRealm;
+
     @Value("${master.client}")
     private String masterClient;
+
+    @Value("${keycloak.clientId}")
+    private String clientId;
+
+    @Value("${keycloak.client.secret}")
+    private String clientSecret;
+
+    @Value("${master.user}")
+    private String masterUser;
+
+    @Value("${master.user.password}")
+    private String masterUserPswd;
 
 }
