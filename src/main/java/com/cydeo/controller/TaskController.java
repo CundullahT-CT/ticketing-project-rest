@@ -7,8 +7,7 @@ import com.cydeo.service.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -75,12 +74,12 @@ public class TaskController {
     }
 
 
-    @GetMapping("/employee/archive")
-    @RolesAllowed("Employee")
-    public ResponseEntity<ResponseWrapper> employeeArchivedTasks(){
-        List<TaskDTO> taskDTOList = taskService.listAllTasksByStatus(Status.COMPLETE);
-        return ResponseEntity.ok(new ResponseWrapper("Tasks are successfully retrieved",taskDTOList,HttpStatus.OK));
-
-    }
+//    @GetMapping("/employee/archive")
+//    @RolesAllowed("Employee")
+//    public ResponseEntity<ResponseWrapper> employeeArchivedTasks(){
+//        List<TaskDTO> taskDTOList = taskService.listAllTasksByStatus(Status.COMPLETE);
+//        return ResponseEntity.ok(new ResponseWrapper("Tasks are successfully retrieved",taskDTOList,HttpStatus.OK));
+//
+//    }
 
 }

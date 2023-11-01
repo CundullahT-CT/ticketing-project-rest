@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -60,12 +60,12 @@ public class ProjectController {
 
     }
 
-    @GetMapping("/manager/project-status")
-    @RolesAllowed("Manager")
-    public ResponseEntity<ResponseWrapper> getProjectByManager(){
-        List<ProjectDTO> projectDTOList = projectService.listAllProjectDetails();
-        return ResponseEntity.ok(new ResponseWrapper("Projects are successfully retrieved",projectDTOList, HttpStatus.OK));
-    }
+//    @GetMapping("/manager/project-status")
+//    @RolesAllowed("Manager")
+//    public ResponseEntity<ResponseWrapper> getProjectByManager(){
+//        List<ProjectDTO> projectDTOList = projectService.listAllProjectDetails();
+//        return ResponseEntity.ok(new ResponseWrapper("Projects are successfully retrieved",projectDTOList, HttpStatus.OK));
+//    }
 
     @PutMapping("/manager/complete/{projectCode}")
     @RolesAllowed("Manager")

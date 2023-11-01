@@ -12,7 +12,6 @@ import com.cydeo.mapper.UserMapper;
 import com.cydeo.repository.TaskRepository;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
-import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -122,8 +121,8 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDTO> listAllTasksByStatusIsNot(Status status) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
-        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
+        var details = authentication.getDetails();
+        String username = details.toString();
 
         UserDTO loggedInUser = userService.findByUserName(username);
 
@@ -132,19 +131,19 @@ public class TaskServiceImpl implements TaskService {
         return tasks.stream().map(taskMapper::convertToDto).collect(Collectors.toList());
     }
 
-    @Override
-    public List<TaskDTO> listAllTasksByStatus(Status status) {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
-        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
-
-        UserDTO loggedInUser = userService.findByUserName(username);
-
-        List<Task> tasks = taskRepository.
-                findAllByTaskStatusAndAssignedEmployee(status, userMapper.convertToEntity(loggedInUser));
-        return tasks.stream().map(taskMapper::convertToDto).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<TaskDTO> listAllTasksByStatus(Status status) {
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
+//        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
+//
+//        UserDTO loggedInUser = userService.findByUserName(username);
+//
+//        List<Task> tasks = taskRepository.
+//                findAllByTaskStatusAndAssignedEmployee(status, userMapper.convertToEntity(loggedInUser));
+//        return tasks.stream().map(taskMapper::convertToDto).collect(Collectors.toList());
+//    }
 
     @Override
     public List<TaskDTO> listAllNonCompletedByAssignedEmployee(UserDTO assignedEmployee) {

@@ -11,7 +11,6 @@ import com.cydeo.repository.ProjectRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
-import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -97,34 +96,34 @@ public class ProjectServiceImpl implements ProjectService {
         taskService.completeByProject(projectMapper.convertToDto(project));
     }
 
-    @Override
-    public List<ProjectDTO> listAllProjectDetails() {
-
-
-        Authentication  authentication = SecurityContextHolder.getContext().getAuthentication();
-        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
-        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
-
-
-        UserDTO currentUserDTO = userService.findByUserName(username);
-
-        User user = userMapper.convertToEntity(currentUserDTO);
-
-        List<Project> list = projectRepository.findAllByAssignedManager(user);
-
-
-        return list.stream().map(project -> {
-
-            ProjectDTO obj = projectMapper.convertToDto(project);
-
-            obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTask(project.getProjectCode()));
-            obj.setCompleteTaskCounts(taskService.totalCompletedTask(project.getProjectCode()));
-
-            return obj;
-            }
-
-        ).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<ProjectDTO> listAllProjectDetails() {
+//
+//
+//        Authentication  authentication = SecurityContextHolder.getContext().getAuthentication();
+//        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
+//        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
+//
+//
+//        UserDTO currentUserDTO = userService.findByUserName(username);
+//
+//        User user = userMapper.convertToEntity(currentUserDTO);
+//
+//        List<Project> list = projectRepository.findAllByAssignedManager(user);
+//
+//
+//        return list.stream().map(project -> {
+//
+//            ProjectDTO obj = projectMapper.convertToDto(project);
+//
+//            obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTask(project.getProjectCode()));
+//            obj.setCompleteTaskCounts(taskService.totalCompletedTask(project.getProjectCode()));
+//
+//            return obj;
+//            }
+//
+//        ).collect(Collectors.toList());
+//    }
 
     @Override
     public List<ProjectDTO> listAllNonCompletedByAssignedManager(UserDTO assignedManager) {
