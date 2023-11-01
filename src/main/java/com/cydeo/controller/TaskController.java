@@ -74,12 +74,12 @@ public class TaskController {
     }
 
 
-//    @GetMapping("/employee/archive")
-//    @RolesAllowed("Employee")
-//    public ResponseEntity<ResponseWrapper> employeeArchivedTasks(){
-//        List<TaskDTO> taskDTOList = taskService.listAllTasksByStatus(Status.COMPLETE);
-//        return ResponseEntity.ok(new ResponseWrapper("Tasks are successfully retrieved",taskDTOList,HttpStatus.OK));
-//
-//    }
+    @GetMapping("/employee/archive")
+    @RolesAllowed("Employee")
+    public ResponseEntity<ResponseWrapper> employeeArchivedTasks(){
+        List<TaskDTO> taskDTOList = taskService.listAllTasksByStatus(Status.COMPLETE);
+        return ResponseEntity.ok(new ResponseWrapper("Tasks are successfully retrieved",taskDTOList,HttpStatus.OK));
+
+    }
 
 }

@@ -11,12 +11,17 @@ import com.cydeo.repository.ProjectRepository;
 import com.cydeo.service.ProjectService;
 import com.cydeo.service.TaskService;
 import com.cydeo.service.UserService;
+import org.keycloak.KeycloakPrincipal;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,34 +101,33 @@ public class ProjectServiceImpl implements ProjectService {
         taskService.completeByProject(projectMapper.convertToDto(project));
     }
 
-//    @Override
-//    public List<ProjectDTO> listAllProjectDetails() {
-//
-//
-//        Authentication  authentication = SecurityContextHolder.getContext().getAuthentication();
-//        SimpleKeycloakAccount details = (SimpleKeycloakAccount) authentication.getDetails();
-//        String username = details.getKeycloakSecurityContext().getToken().getPreferredUsername();
-//
-//
-//        UserDTO currentUserDTO = userService.findByUserName(username);
-//
-//        User user = userMapper.convertToEntity(currentUserDTO);
-//
-//        List<Project> list = projectRepository.findAllByAssignedManager(user);
-//
-//
-//        return list.stream().map(project -> {
-//
-//            ProjectDTO obj = projectMapper.convertToDto(project);
-//
-//            obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTask(project.getProjectCode()));
-//            obj.setCompleteTaskCounts(taskService.totalCompletedTask(project.getProjectCode()));
-//
-//            return obj;
-//            }
-//
-//        ).collect(Collectors.toList());
-//    }
+    @Override
+    public List<ProjectDTO> listAllProjectDetails() {
+
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Map<String, Object> attributes = ((JwtAuthenticationToken) authentication).getTokenAttributes();
+        String username = (String) attributes.get("preferred_username");
+
+        UserDTO currentUserDTO = userService.findByUserName(username);
+
+        User user = userMapper.convertToEntity(currentUserDTO);
+
+        List<Project> list = projectRepository.findAllByAssignedManager(user);
+
+
+        return list.stream().map(project -> {
+
+            ProjectDTO obj = projectMapper.convertToDto(project);
+
+            obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTask(project.getProjectCode()));
+            obj.setCompleteTaskCounts(taskService.totalCompletedTask(project.getProjectCode()));
+
+            return obj;
+            }
+
+        ).collect(Collectors.toList());
+    }
 
     @Override
     public List<ProjectDTO> listAllNonCompletedByAssignedManager(UserDTO assignedManager) {

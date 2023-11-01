@@ -60,12 +60,12 @@ public class ProjectController {
 
     }
 
-//    @GetMapping("/manager/project-status")
-//    @RolesAllowed("Manager")
-//    public ResponseEntity<ResponseWrapper> getProjectByManager(){
-//        List<ProjectDTO> projectDTOList = projectService.listAllProjectDetails();
-//        return ResponseEntity.ok(new ResponseWrapper("Projects are successfully retrieved",projectDTOList, HttpStatus.OK));
-//    }
+    @GetMapping("/manager/project-status")
+    @RolesAllowed("Manager")
+    public ResponseEntity<ResponseWrapper> getProjectByManager(){
+        List<ProjectDTO> projectDTOList = projectService.listAllProjectDetails();
+        return ResponseEntity.ok(new ResponseWrapper("Projects are successfully retrieved",projectDTOList, HttpStatus.OK));
+    }
 
     @PutMapping("/manager/complete/{projectCode}")
     @RolesAllowed("Manager")

@@ -24,7 +24,7 @@ public interface TaskService {
     void completeByProject(ProjectDTO projectDTO);
 
     List<TaskDTO> listAllTasksByStatusIsNot(Status status);
-//    List<TaskDTO> listAllTasksByStatus(Status status);
+    List<TaskDTO> listAllTasksByStatus(Status status);
 
     List<TaskDTO> listAllNonCompletedByAssignedEmployee(UserDTO assignedEmployee);
 
